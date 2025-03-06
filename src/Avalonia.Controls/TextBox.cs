@@ -1467,6 +1467,15 @@ namespace Avalonia.Controls
                         {
                             selection = DetectSelection();
 
+                            if (!selection && SelectionStart != SelectionEnd)
+                            {
+                                // clear the selection and move to the "left" side of previous selection
+                                var newPosition = Math.Min(SelectionStart, SelectionEnd);
+                                SetCurrentValue(SelectionStartProperty, newPosition);
+                                SetCurrentValue(SelectionEndProperty, newPosition);
+                                _presenter.MoveCaretToTextPosition(newPosition);
+                            }
+
                             _presenter.MoveCaretVertical(LogicalDirection.Backward);
 
                             if (caretIndex != _presenter.CaretIndex)
@@ -1488,6 +1497,15 @@ namespace Avalonia.Controls
                     case Key.Down:
                         {
                             selection = DetectSelection();
+
+                            if (!selection && SelectionStart != SelectionEnd)
+                            {
+                                // clear the selection and move to the "right" side of previous selection
+                                var newPosition = Math.Max(SelectionStart, SelectionEnd);
+                                SetCurrentValue(SelectionStartProperty, newPosition);
+                                SetCurrentValue(SelectionEndProperty, newPosition);
+                                _presenter.MoveCaretToTextPosition(newPosition);
+                            }
 
                             _presenter.MoveCaretVertical();
 
